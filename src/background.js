@@ -1,11 +1,13 @@
 'use strict'
 
-const Store = require('electron-store');
 import { app, protocol, BrowserWindow, Tray, Menu, desktopCapturer } from 'electron'
+import { autoUpdater } from 'electron-updater';
 import { hostname } from 'os';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import ws from './Services/Websocket/connection';
 import initWebSocket from './Services/Websocket/websocket';
+
+const Store = require('electron-store');
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const path = require('path')
 const fs = require('fs')
@@ -64,6 +66,7 @@ async function createWindow() {
   } else {
     createProtocol('app')
     win.loadURL('app://./index.html')
+    autoUpdater.checkForUpdatesAndNotify()
   }
 }
 
