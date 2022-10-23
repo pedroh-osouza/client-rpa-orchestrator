@@ -6,6 +6,7 @@ module.exports = defineConfig({
       nodeIntegration: true,
       contextIsolation: false,
       builderOptions: {
+        publish: ['github'],
         extraFiles: [{
           "from":"src/icons",
           "to":"src/icons",
