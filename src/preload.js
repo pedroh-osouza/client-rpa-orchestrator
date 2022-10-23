@@ -3,7 +3,7 @@ import ws from './Services/Websocket/connection';
 const peerConnections = {};
 const config = {
     iceServers: [
-        { url: process.env.STUN_SERVER },
+        { url: process.env.VUE_APP_ROOT_STUN },
     ]
 };
 var stream

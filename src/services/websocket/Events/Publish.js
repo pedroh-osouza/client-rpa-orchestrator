@@ -14,7 +14,7 @@ export default class Publish {
                 var processes = execSync('wmic process get description').toString();
                 uipathRunning = processes.includes('UiPath.Executor');
 
-                await axios.post(`${process.env.PUB_URL}/status/${id}`, {
+                await axios.post(`${process.env.VUE_APP_ROOT_PUB}/status/${id}`, {
                     in_execution: uipathRunning
                 })
 
