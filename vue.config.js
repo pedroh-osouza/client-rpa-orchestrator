@@ -6,6 +6,7 @@ module.exports = defineConfig({
       nodeIntegration: true,
       contextIsolation: false,
       builderOptions: {
+        productName: 'Client Rpa Orchestrator',
         publish: ['github'],
         extraFiles: [{
           "from":"src/icons",

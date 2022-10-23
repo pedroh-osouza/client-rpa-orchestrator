@@ -37,6 +37,7 @@ async function createWindow() {
   win = new BrowserWindow({
     width: 1280,
     height: 720,
+    title: 'Client Rpa Orchestrator',
     autoHideMenuBar: true,
     resizable: false,
     webPreferences: {
@@ -114,3 +115,5 @@ ws.onEvent('watcher', (event) => {
     win.webContents.send('watcher', sources[0].id, hostName)
   })
 });
+
+console.log(app.getName())
