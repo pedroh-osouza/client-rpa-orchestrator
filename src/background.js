@@ -96,8 +96,8 @@ app.on('ready', async () => {
 })
 
 if (!isDevelopment) {
-  fs.copyFile(`${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/client-rpa-orchestrator.lnk`,
-    `${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Startup/client-rpa-orchestrator.lnk`, (err) => {})
+  fs.copyFile(`${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Client Rpa Orchestrator.lnk`,
+    `${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Startup/Client Rpa Orchestrator.lnk`, (err) => {})
 }
 
 function initDatabase() {
@@ -115,5 +115,3 @@ ws.onEvent('watcher', (event) => {
     win.webContents.send('watcher', sources[0].id, hostName)
   })
 });
-
-console.log(app.getName())
