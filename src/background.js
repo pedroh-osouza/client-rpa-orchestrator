@@ -11,14 +11,7 @@ const Store = require('electron-store');
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const path = require('path')
 const fs = require('fs')
-
-require('events').EventEmitter.prototype._maxListeners = 1000;
-protocol.registerSchemesAsPrivileged([
-  { scheme: 'app', privileges: { secure: true, standard: true } }
-])
-
 const hostName = hostname();
-var tray = null
 const contextMenu = Menu.buildFromTemplate([
   {
     label: 'Abrir Painel', click: function () {
@@ -31,9 +24,29 @@ const contextMenu = Menu.buildFromTemplate([
     }
   },
 ])
+
+require('events').EventEmitter.prototype._maxListeners = 1000;
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'app', privileges: { secure: true, standard: true } }
+])
+
+if (!isDevelopment) {
+  fs.copyFile(`${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Client Rpa Orchestrator.lnk`,
+    `${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Startup/Client Rpa Orchestrator.lnk`, (err) => {console.log(err)})
+}
+
+var tray = null
 var win = null
 
+function initDatabase() {
+  const store = new Store({
+    watch: true
+  });
+  if (!store.has('robots')) store.set('robots', [])
+}
+
 async function createWindow() {
+  
   win = new BrowserWindow({
     width: 1280,
     height: 720,
@@ -45,12 +58,6 @@ async function createWindow() {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
   })
-
-  //win.webContents.openDevTools()
-
-  tray = new Tray(process.cwd() + '/src/icons/icon.png')
-  tray.setToolTip('Client Rpa Orchestrator')
-  tray.setContextMenu(contextMenu)
 
   win.on('close', function () {
     win = null
@@ -66,11 +73,22 @@ async function createWindow() {
   } else {
     createProtocol('app')
     win.loadURL('app://./index.html')
-    autoUpdater.autoDownload = true
-    autoUpdater.checkForUpdatesAndNotify()
-    autoUpdater.autoInstallOnAppQuit()
-    autoUpdater.autoRunAppAfterInstall()
+    // autoUpdater.autoInstallOnAppQuit()
+    // autoUpdater.autoRunAppAfterInstall()
   }
+
+  tray = new Tray(process.cwd() + '/src/icons/icon.png')
+  tray.setToolTip('Client Rpa Orchestrator')
+  tray.setContextMenu(contextMenu)
+
+  autoUpdater.on('update-available', ()=>{
+    tray.displayBalloon({title: 'Atualização Disponível', content: 'Ao terminar o download o programa será atualizado'})
+    autoUpdater.downloadUpdate()
+  })
+
+  autoUpdater.on('update-downloaded', ()=>{
+    autoUpdater.quitAndInstall()
+  })
 }
 
 app.on('window-all-closed', () => {
@@ -96,28 +114,12 @@ app.on('ready', async () => {
     initWebSocket()
   })
 
-  autoUpdater.on('update-downloaded', ()=>{
-    autoUpdater.quitAndInstall()
-  })
-})
-
-if (!isDevelopment) {
-  fs.copyFile(`${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Client Rpa Orchestrator.lnk`,
-    `${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Startup/Client Rpa Orchestrator.lnk`, (err) => {console.log(err)})
-}
-
-function initDatabase() {
-  const store = new Store({
-    watch: true
+  ws.onEvent('watcher', (event) => {
+    let data = event.request.arguments.data;
+    if (!data.id == hostName) return;
+    console.log('watcher')
+    desktopCapturer.getSources({ types: ['screen'] }).then(async sources => {
+      win.webContents.send('watcher', sources[0].id, hostName)
+    })
   });
-  if (!store.has('robots')) store.set('robots', [])
-}
-
-ws.onEvent('watcher', (event) => {
-  let data = event.request.arguments.data;
-  if (!data.id == hostName) return;
-  console.log('watcher')
-  desktopCapturer.getSources({ types: ['screen'] }).then(async sources => {
-    win.webContents.send('watcher', sources[0].id, hostName)
-  })
-});
+})
