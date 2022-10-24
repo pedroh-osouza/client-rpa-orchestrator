@@ -17,4 +17,5 @@ npm electron:build
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-See [Configuration Reference](https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/).
+
+See [Vue CLI Electron Builder](https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/).
