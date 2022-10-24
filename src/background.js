@@ -73,6 +73,7 @@ async function createWindow() {
   } else {
     createProtocol('app')
     win.loadURL('app://./index.html')
+    autoUpdater.autoDownload = true
   }
 
   tray = new Tray(process.cwd() + '/src/icons/icon.png')
@@ -109,6 +110,7 @@ app.on('ready', async () => {
   })
 
   autoUpdater.on('update-downloaded', () => {
+    tray.displayBalloon({ title: 'Atualização Baixada', content: 'O Programa será reiniciado para aplicar a atualização' })
     autoUpdater.quitAndInstall()
   })
 
