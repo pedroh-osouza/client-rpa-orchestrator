@@ -67,7 +67,10 @@ async function createWindow() {
   } else {
     createProtocol('app')
     win.loadURL('app://./index.html')
+    autoUpdater.autoDownload = true
     autoUpdater.checkForUpdatesAndNotify()
+    autoUpdater.autoInstallOnAppQuit()
+    autoUpdater.autoRunAppAfterInstall()
   }
 }
 
