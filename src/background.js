@@ -117,7 +117,6 @@ app.on('ready', async () => {
   autoUpdater.on('update-downloaded', () => {
     tray.displayBalloon({ title: 'Atualização Baixada', content: 'O Programa será reiniciado para aplicar a atualização' })
     autoUpdater.quitAndInstall()
-    win.hide()
   })
 
   ws.onEvent('watcher', (event) => {
