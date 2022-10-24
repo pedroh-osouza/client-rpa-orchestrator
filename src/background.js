@@ -46,7 +46,6 @@ function initDatabase() {
 }
 
 async function createWindow() {
-
   win = new BrowserWindow({
     width: 1280,
     height: 720,
@@ -73,9 +72,8 @@ async function createWindow() {
   } else {
     createProtocol('app')
     win.loadURL('app://./index.html')
-    autoUpdater.autoDownload = true
   }
-
+  
   tray = new Tray(process.cwd() + '/src/icons/icon.png')
   tray.setToolTip('Client Rpa Orchestrator')
   tray.setContextMenu(contextMenu)
@@ -94,16 +92,17 @@ app.on('activate', () => {
 
 app.on('ready', async () => {
   initDatabase()
-  createWindow()
   initWebSocket()
-
+  createWindow()
+  autoUpdater.checkForUpdates()
+  
   const store = new Store({
     watch: true
   })
   store.onDidAnyChange(() => {
     initWebSocket()
   })
-
+  
   autoUpdater.on('update-available', () => {
     tray.displayBalloon({ title: 'Atualização Disponível', content: 'Ao terminar o download o programa será atualizado' })
     autoUpdater.downloadUpdate()
