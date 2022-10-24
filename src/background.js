@@ -14,12 +14,12 @@ const fs = require('fs')
 const hostName = hostname();
 const contextMenu = Menu.buildFromTemplate([
   {
-    label: 'Abrir Painel', click: function () {
+    label: 'Abrir painel', click: function () {
       if (!win.isVisible()) win.show()
     }
   },
   {
-    label: 'Fechar Orquestrador', click: function () {
+    label: 'Fechar orquestrador', click: function () {
       app.quit()
     }
   },
