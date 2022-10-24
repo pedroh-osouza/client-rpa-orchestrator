@@ -37,7 +37,6 @@ if (!isDevelopment) {
 
 var tray = null
 var win = null
-autoUpdater.autoDownload = true
 
 function initDatabase() {
   const store = new Store({
@@ -75,6 +74,9 @@ async function createWindow() {
     win.loadURL('app://./index.html')
   }
   
+  autoUpdater.autoInstallOnAppQuit = true
+  autoUpdater.autoRunAppAfterInstall = true
+
   tray = new Tray(process.cwd() + '/src/icons/icon.png')
   tray.setToolTip('Client Rpa Orchestrator')
   tray.setContextMenu(contextMenu)
