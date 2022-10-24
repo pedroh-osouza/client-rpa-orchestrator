@@ -21,12 +21,12 @@ const hostName = hostname();
 var tray = null
 const contextMenu = Menu.buildFromTemplate([
   {
-    label: 'Open GUI', click: function () {
+    label: 'Abrir Painel', click: function () {
       if (!win.isVisible()) win.show()
     }
   },
   {
-    label: 'Quit', click: function () {
+    label: 'Fechar Orquestrador', click: function () {
       app.quit()
     }
   },
