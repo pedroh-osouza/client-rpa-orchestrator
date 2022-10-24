@@ -5,14 +5,14 @@ import stop from '../Triggers/stop';
 export default class Subscribe {
 
     eventStart(public_id) {
-        ws.onEvent(`start.${public_id}`, (event) => {
+        ws.onEvent(`start.${public_id}`, () => {
             start(public_id)
         })
     }
 
     eventStop(public_id) {
-        ws.onEvent(`stop.${public_id}`, (event) =>{
-            stop(public_id)
+        ws.onEvent(`stop.${public_id}`, () =>{
+            stop()
         })
     }
 }
