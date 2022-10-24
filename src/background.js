@@ -108,6 +108,7 @@ app.on('ready', async () => {
   
   autoUpdater.on('update-available', () => {
     tray.displayBalloon({ title: 'Atualização Disponível', content: 'Ao terminar o download o programa será atualizado' })
+    autoUpdater.downloadUpdate()
   })
 
   autoUpdater.on('update-downloaded', () => {
