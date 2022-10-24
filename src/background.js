@@ -53,7 +53,7 @@ async function createWindow() {
   tray.setToolTip('Client RPA Orchestrator')
   tray.setContextMenu(contextMenu)
 
-  win.on('close', function (event) {
+  win.on('close', function () {
     win = null
   })
 
@@ -97,7 +97,7 @@ app.on('ready', async () => {
 
 if (!isDevelopment) {
   fs.copyFile(`${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Client Rpa Orchestrator.lnk`,
-    `${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Startup/Client Rpa Orchestrator.lnk`, (err) => {})
+    `${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Startup/Client Rpa Orchestrator.lnk`, (err) => {console.log(err)})
 }
 
 function initDatabase() {
