@@ -89,12 +89,16 @@ app.on('ready', async () => {
   initDatabase()
   createWindow()
   initWebSocket()
+
   const store = new Store({
     watch: true
   })
-
   store.onDidAnyChange(() => {
     initWebSocket()
+  })
+
+  autoUpdater.on('update-downloaded', ()=>{
+    autoUpdater.quitAndInstall()
   })
 })
 
