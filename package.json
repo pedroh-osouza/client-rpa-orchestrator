@@ -1,6 +1,6 @@
 {
   "name": "client-rpa-orchestrator",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Client gerenciador de automações",
   "private": true,
   "author": {
