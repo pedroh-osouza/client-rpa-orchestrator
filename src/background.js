@@ -14,30 +14,35 @@ const fs = require('fs')
 const hostName = hostname();
 const contextMenu = Menu.buildFromTemplate([
   {
-    label: 'Abrir painel', click: function () {
+    label: 'Abrir Painel', click: function () {
       if (!win.isVisible()) win.show()
     }
   },
   {
-    label: 'Fechar orquestrador', click: function () {
+    label: 'Fechar Orquestrador', click: function () {
       app.quit()
     }
   },
 ])
+
+autoUpdater.autoDownload = true
+autoUpdater.autoInstallOnAppQuit = true
+autoUpdater.autoRunAppAfterInstall = true
 
 require('events').EventEmitter.prototype._maxListeners = 1000;
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
-if (!isDevelopment) {
-  fs.copyFile(`${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Client Rpa Orchestrator.lnk`,
-    `${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Startup/Client Rpa Orchestrator.lnk`, (err) => { console.log(err) })
-}
-
 var tray = null;
 var win = null;
 var updateInterval = null;
+
+function initTray(){
+  tray = new Tray(process.cwd() + '/src/icons/icon.png')
+  tray.setToolTip('Client Rpa Orchestrator')
+  tray.setContextMenu(contextMenu)
+}
 
 function initDatabase() {
   const store = new Store({
@@ -62,7 +67,7 @@ async function createWindow() {
   win.on('close', function () {
     win = null
   })
-
+  
   win.on('minimize', function (event) {
     event.preventDefault()
     win.hide()
@@ -74,14 +79,6 @@ async function createWindow() {
     createProtocol('app')
     win.loadURL('app://./index.html')
   }
-  
-  autoUpdater.autoDownload = true
-  autoUpdater.autoInstallOnAppQuit = true
-  autoUpdater.autoRunAppAfterInstall = true
-
-  tray = new Tray(process.cwd() + '/src/icons/icon.png')
-  tray.setToolTip('Client Rpa Orchestrator')
-  tray.setContextMenu(contextMenu)
 }
 
 app.on('window-all-closed', () => {
@@ -98,6 +95,7 @@ app.on('activate', () => {
 app.on('ready', async () => {
   initDatabase()
   initWebSocket()
+  initTray()
   createWindow()
   autoUpdater.checkForUpdates()
   
@@ -127,5 +125,9 @@ app.on('ready', async () => {
       win.webContents.send('watcher', sources[0].id, hostName)
     })
   });
-
 })
+
+if (!isDevelopment) {
+  fs.copyFile(`${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Client Rpa Orchestrator.lnk`,
+    `${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Startup/Client Rpa Orchestrator.lnk`, (err) => { console.log(err) })
+}
