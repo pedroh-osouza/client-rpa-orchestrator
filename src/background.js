@@ -37,7 +37,6 @@ async function createWindow() {
   win = new BrowserWindow({
     width: 1280,
     height: 720,
-    title: 'Client Rpa Orchestrator',
     autoHideMenuBar: true,
     resizable: false,
     webPreferences: {
@@ -50,7 +49,7 @@ async function createWindow() {
   //win.webContents.openDevTools()
 
   tray = new Tray(process.cwd() + '/src/icons/icon.png')
-  tray.setToolTip('Client RPA Orchestrator')
+  tray.setToolTip('Client Rpa Orchestrator')
   tray.setContextMenu(contextMenu)
 
   win.on('close', function () {
