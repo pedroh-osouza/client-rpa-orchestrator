@@ -32,7 +32,7 @@ protocol.registerSchemesAsPrivileged([
 
 if (!isDevelopment) {
   fs.copyFile(`${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Client Rpa Orchestrator.lnk`,
-    `${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Startup/Client Rpa Orchestrator.lnk`, (err) => {console.log(err)})
+    `${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Startup/Client Rpa Orchestrator.lnk`, (err) => { console.log(err) })
 }
 
 var tray = null
@@ -46,7 +46,7 @@ function initDatabase() {
 }
 
 async function createWindow() {
-  
+
   win = new BrowserWindow({
     width: 1280,
     height: 720,
@@ -73,22 +73,11 @@ async function createWindow() {
   } else {
     createProtocol('app')
     win.loadURL('app://./index.html')
-    // autoUpdater.autoInstallOnAppQuit()
-    // autoUpdater.autoRunAppAfterInstall()
   }
 
   tray = new Tray(process.cwd() + '/src/icons/icon.png')
   tray.setToolTip('Client Rpa Orchestrator')
   tray.setContextMenu(contextMenu)
-
-  autoUpdater.on('update-available', ()=>{
-    tray.displayBalloon({title: 'Atualização Disponível', content: 'Ao terminar o download o programa será atualizado'})
-    autoUpdater.downloadUpdate()
-  })
-
-  autoUpdater.on('update-downloaded', ()=>{
-    autoUpdater.quitAndInstall()
-  })
 }
 
 app.on('window-all-closed', () => {
@@ -112,6 +101,15 @@ app.on('ready', async () => {
   })
   store.onDidAnyChange(() => {
     initWebSocket()
+  })
+
+  autoUpdater.on('update-available', () => {
+    tray.displayBalloon({ title: 'Atualização Disponível', content: 'Ao terminar o download o programa será atualizado' })
+    autoUpdater.downloadUpdate()
+  })
+
+  autoUpdater.on('update-downloaded', () => {
+    autoUpdater.quitAndInstall()
   })
 
   ws.onEvent('watcher', (event) => {
