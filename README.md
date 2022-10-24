@@ -1,4 +1,4 @@
-# client-rpa-orchestrator
+# Client RPA Orchestrator
 
 ## Project setup
 ```
@@ -17,3 +17,4 @@ npm electron:build
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+See [Configuration Reference](https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/).
