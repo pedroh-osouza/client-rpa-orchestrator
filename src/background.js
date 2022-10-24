@@ -74,6 +74,7 @@ async function createWindow() {
     win.loadURL('app://./index.html')
   }
   
+  autoUpdater.autoDownload = true
   autoUpdater.autoInstallOnAppQuit = true
   autoUpdater.autoRunAppAfterInstall = true
 
@@ -108,7 +109,6 @@ app.on('ready', async () => {
   
   autoUpdater.on('update-available', () => {
     tray.displayBalloon({ title: 'Atualização Disponível', content: 'Ao terminar o download o programa será atualizado' })
-    autoUpdater.downloadUpdate()
   })
 
   autoUpdater.on('update-downloaded', () => {
