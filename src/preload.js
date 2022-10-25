@@ -1,11 +1,12 @@
 const { ipcRenderer } = require('electron');
-import ws from './Services/Websocket/connection';
 const peerConnections = {};
 const config = {
     iceServers: [
-        { url: process.env.VUE_APP_ROOT_STUN },
+        { url: 'stun:stun.l.google.com:19302' },
     ]
 };
+
+import ws from './Services/Websocket/connection';
 var stream
 
 ws.onEvent("answer", (event) => {
@@ -49,9 +50,7 @@ ipcRenderer.on('watcher', async (event, sourceId, id) => {
 
 ws.onEvent("candidate", (event) => {
     let data = event.request.arguments.data
-    if(data.candidate){
-        peerConnections[data.id].addIceCandidate(new RTCIceCandidate(data.candidate)).catch(e => console.log(e));
-    }
+    peerConnections[data.id].addIceCandidate(data.candidate);
 });
 
 ws.onEvent("disconnectPeer", (event) => {
