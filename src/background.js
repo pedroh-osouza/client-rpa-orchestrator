@@ -63,7 +63,7 @@ async function createWindow() {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
   })
-
+  win.webContents.openDevTools()
   win.on('close', function () {
     win = null
   })
