@@ -8,7 +8,6 @@ const config = {
 
 const { hostname } = require('os');
 const hostName = hostname()
-const ws = require('./websocket')
 import ws from './Services/Websocket/connection';
 
 ipcRenderer.on('watcher', async (event, sourceId, idConnection) => {
