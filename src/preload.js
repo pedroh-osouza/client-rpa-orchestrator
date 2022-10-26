@@ -6,16 +6,13 @@ const config = {
     ]
 };
 
+const { hostname } = require('os');
+const hostName = hostname()
+const ws = require('./websocket')
 import ws from './Services/Websocket/connection';
-var stream
 
-ws.onEvent("answer", (event) => {
-    let data = event.request.arguments.data
-    peerConnections[data.id].setRemoteDescription(data.description);
-});
-
-ipcRenderer.on('watcher', async (event, sourceId, id) => {
-    stream = await navigator.mediaDevices.getUserMedia({
+ipcRenderer.on('watcher', async (event, sourceId, idConnection) => {
+    var stream = await navigator.mediaDevices.getUserMedia({
         audio: false,
         video: {
             mandatory: {
@@ -29,14 +26,20 @@ ipcRenderer.on('watcher', async (event, sourceId, id) => {
         }
     });
 
+    ws.onEvent(`answer.${hostName}.${idConnection}`, (event) => {
+        console.log('answer')
+        let data = event.request.arguments.data;
+        peerConnections[data.idConnection].setRemoteDescription(data.description);
+    })
+
     const peerConnection = new RTCPeerConnection(config);
-    peerConnections[id] = peerConnection;
+    peerConnections[idConnection] = peerConnection;
 
     stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
 
     peerConnection.onicecandidate = event => {
         if (event.candidate) {
-            ws.emit("candidate", { id: id, candidate: event.candidate });
+            ws.emit(`candidate.${hostName}.${idConnection}`, { idConnection: idConnection, candidate: event.candidate });
         }
     };
 
@@ -44,21 +47,12 @@ ipcRenderer.on('watcher', async (event, sourceId, id) => {
         .createOffer()
         .then(sdp => peerConnection.setLocalDescription(sdp))
         .then(() => {
-            ws.emit("offer", { id: id, description: peerConnection.localDescription });
+            ws.emit(`offer.${hostName}.${idConnection}`, { idConnection: idConnection, description: peerConnection.localDescription });
         });
-});
 
-ws.onEvent("candidate", (event) => {
-    let data = event.request.arguments.data
-    peerConnections[data.id].addIceCandidate(data.candidate);
-});
+    ws.onEvent(`candidate.${hostName}.${idConnection}`, (event) => {
+        let data = event.request.arguments.data;
+        peerConnections[data.idConnection].addIceCandidate(new RTCIceCandidate(data.candidate));
+    });
 
-ws.onEvent("disconnectPeer", (event) => {
-    let data = event.request.arguments.data
-    peerConnections[data.id].close();
-    delete peerConnections[data.id];
 });
-
-window.onunload = window.onbeforeunload = () => {
-    ws.close();
-};

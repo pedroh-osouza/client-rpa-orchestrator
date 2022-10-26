@@ -38,7 +38,7 @@ var tray = null;
 var win = null;
 var updateInterval = null;
 
-function initTray(){
+function initTray() {
   tray = new Tray(process.cwd() + '/src/icons/icon.png')
   tray.setToolTip('Client Rpa Orchestrator')
   tray.setContextMenu(contextMenu)
@@ -67,7 +67,7 @@ async function createWindow() {
   win.on('close', function () {
     win = null
   })
-  
+
   win.on('minimize', function (event) {
     event.preventDefault()
     win.hide()
@@ -98,14 +98,14 @@ app.on('ready', async () => {
   initTray()
   createWindow()
   autoUpdater.checkForUpdates()
-  
+
   const store = new Store({
     watch: true
   })
   store.onDidAnyChange(() => {
     initWebSocket()
   })
-  
+
   updateInterval = setInterval(() => autoUpdater.checkForUpdates(), 3000);
 
   autoUpdater.on('update-available', () => {
@@ -117,12 +117,11 @@ app.on('ready', async () => {
     autoUpdater.quitAndInstall()
   })
 
-  ws.onEvent('watcher', (event) => {
+  ws.onEvent(`watcher.${hostName}`, (event) => {
     let data = event.request.arguments.data;
-    if (!data.id == hostName) return;
     console.log('watcher')
     desktopCapturer.getSources({ types: ['screen'] }).then(async sources => {
-      win.webContents.send('watcher', sources[0].id, hostName)
+      win.webContents.send('watcher', sources[0].id, data.idConnection)
     })
   });
 })
