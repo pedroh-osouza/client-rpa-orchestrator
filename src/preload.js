@@ -6,8 +6,16 @@ const config = {
 
 import ws from "./Services/Websocket/connection";
 
+function clearPeerConnectionsDisconnecteds(){
+  for(let keyConnection in peerConnections ){
+    if(peerConnections[keyConnection].iceConnectionState === 'disconnected'){
+      peerConnections[keyConnection].close()
+      delete peerConnections[keyConnection];
+    }
+  }
+}
 ipcRenderer.on("watcher", async (event, sourceId, remoteIdConnection) => {
-
+  
   var stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
@@ -30,6 +38,7 @@ ipcRenderer.on("watcher", async (event, sourceId, remoteIdConnection) => {
 
   const peerConnection = new RTCPeerConnection(config);
   peerConnections[remoteIdConnection] = peerConnection;
+  clearPeerConnectionsDisconnecteds()
   console.log('peerConnections',peerConnections)
 
   stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
@@ -59,13 +68,4 @@ ipcRenderer.on("watcher", async (event, sourceId, remoteIdConnection) => {
       new RTCIceCandidate(data.candidate)
     );
   });
-
-  console.log('onEvent', `disconnectPeer.${remoteIdConnection}`)
-  ws.onEvent(`disconnectPeer.${remoteIdConnection}`, (event) => {
-      let data = event.request.arguments.data;
-      if(!(data.remoteIdConnection in peerConnections)) return;
-      peerConnections[data.remoteIdConnection].close();
-      delete peerConnections[data.remoteIdConnection];
-      console.log('disconnectPeer',peerConnections)
-  })
 });
