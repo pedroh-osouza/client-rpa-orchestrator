@@ -4,12 +4,10 @@ const config = {
   iceServers: [{ url: "stun:stun.l.google.com:19302" }],
 };
 
-const { hostname } = require("os");
-const hostName = hostname();
 import ws from "./Services/Websocket/connection";
 
-ipcRenderer.on("watcher", async (event, sourceId, idConnection) => {
-  let remoteIdConnection = `${hostName}.${idConnection}` 
+ipcRenderer.on("watcher", async (event, sourceId, remoteIdConnection) => {
+
   var stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
@@ -27,18 +25,19 @@ ipcRenderer.on("watcher", async (event, sourceId, idConnection) => {
   ws.onEvent(`answer.${remoteIdConnection}`, event => {
     console.log("answer");
     let data = event.request.arguments.data;
-    peerConnections[data.idConnection].setRemoteDescription(data.description);
+    peerConnections[data.remoteIdConnection].setRemoteDescription(data.description);
   });
 
   const peerConnection = new RTCPeerConnection(config);
-  peerConnections[idConnection] = peerConnection;
+  peerConnections[remoteIdConnection] = peerConnection;
+  console.log('peerConnections',peerConnections)
 
   stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
 
   peerConnection.onicecandidate = event => {
     if (event.candidate) {
       ws.emit(`candidate.${remoteIdConnection}`, {
-        idConnection: idConnection,
+        remoteIdConnection,
         candidate: event.candidate,
       });
     }
@@ -49,14 +48,14 @@ ipcRenderer.on("watcher", async (event, sourceId, idConnection) => {
     .then(sdp => peerConnection.setLocalDescription(sdp))
     .then(() => {
       ws.emit(`offer.${remoteIdConnection}`, {
-        idConnection: idConnection,
+        remoteIdConnection,
         description: peerConnection.localDescription,
       });
     });
 
   ws.onEvent(`candidate.${remoteIdConnection}`, event => {
     let data = event.request.arguments.data;
-    peerConnections[data.idConnection].addIceCandidate(
+    peerConnections[data.remoteIdConnection].addIceCandidate(
       new RTCIceCandidate(data.candidate)
     );
   });
@@ -64,9 +63,9 @@ ipcRenderer.on("watcher", async (event, sourceId, idConnection) => {
   console.log('onEvent', `disconnectPeer.${remoteIdConnection}`)
   ws.onEvent(`disconnectPeer.${remoteIdConnection}`, (event) => {
       let data = event.request.arguments.data;
-      if(!(data.idConnection in peerConnections)) return;
-      peerConnections[data.idConnection].close();
-      delete peerConnections[data.idConnection];
+      if(!(data.remoteIdConnection in peerConnections)) return;
+      peerConnections[data.remoteIdConnection].close();
+      delete peerConnections[data.remoteIdConnection];
       console.log('disconnectPeer',peerConnections)
   })
 });

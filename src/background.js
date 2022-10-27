@@ -121,7 +121,7 @@ app.on('ready', async () => {
     let data = event.request.arguments.data;
     console.log('watcher')
     desktopCapturer.getSources({ types: ['screen'] }).then(async sources => {
-      win.webContents.send('watcher', sources[0].id, data.idConnection)
+      win.webContents.send('watcher', sources[0].id, data.remoteIdConnection)
     })
   });
 })
