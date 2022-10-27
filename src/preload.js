@@ -61,8 +61,10 @@ ipcRenderer.on("watcher", async (event, sourceId, idConnection) => {
     );
   });
 
+  console.log('onEvent', `disconnectPeer.${remoteIdConnection}`)
   ws.onEvent(`disconnectPeer.${remoteIdConnection}`, (event) => {
       let data = event.request.arguments.data;
+      if(!(data.idConnection in peerConnections)) return;
       peerConnections[data.idConnection].close();
       delete peerConnections[data.idConnection];
       console.log('disconnectPeer',peerConnections)
