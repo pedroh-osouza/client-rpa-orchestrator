@@ -14,12 +14,12 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
+var tray = null
+var win = null;
+
 if (!isDevelopment) {
   startWithWindows()
 }
-
-var tray = null
-var win = null;
 
 async function createWindow() {
   win = new BrowserWindow({
