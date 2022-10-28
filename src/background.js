@@ -1,5 +1,5 @@
 import { app, protocol, BrowserWindow, desktopCapturer } from 'electron'
-import { autoUpdater } from 'electron-updater';
+// import { autoUpdater } from 'electron-updater';
 import { hostname } from 'os';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import ws from './Services/Websocket/connection';
@@ -7,10 +7,11 @@ import initWebSocket from './Services/Websocket/websocket';
 import initTray from './config/tray'
 import startWithWindows from './config/windowsStartUp';
 import path from 'path'
+import setUpdateConfig from './config/update';
 
-autoUpdater.autoDownload = true
-autoUpdater.autoInstallOnAppQuit = true
-autoUpdater.autoRunAppAfterInstall = true
+// autoUpdater.autoDownload = true
+// autoUpdater.autoInstallOnAppQuit = true
+// autoUpdater.autoRunAppAfterInstall = true
 
 require('events').EventEmitter.prototype._maxListeners = 1000;
 protocol.registerSchemesAsPrivileged([
@@ -24,7 +25,7 @@ if (!isDevelopment) {
 
 var tray = null
 var win = null;
-var updateInterval = null;
+// var updateInterval = null;
 
 async function createWindow() {
   win = new BrowserWindow({
@@ -71,18 +72,20 @@ app.on('ready', async () => {
   initWebSocket()
   createWindow()
   tray = initTray(win)
-  autoUpdater.checkForUpdates()
+  setUpdateConfig(tray)
+  
+  // autoUpdater.checkForUpdates()
 
-  updateInterval = setInterval(() => autoUpdater.checkForUpdates(), 3000);
+  // updateInterval = setInterval(() => autoUpdater.checkForUpdates(), 3000);
 
-  autoUpdater.on('update-available', () => {
-    tray.displayBalloon({ title: 'Atualização Disponível', content: 'Ao terminar o download o programa será atualizado' })
-  })
+  // autoUpdater.on('update-available', () => {
+  //   tray.displayBalloon({ title: 'Atualização Disponível', content: 'Ao terminar o download o programa será atualizado' })
+  // })
 
-  autoUpdater.on('update-downloaded', () => {
-    tray.displayBalloon({ title: 'Atualização Baixada', content: 'O Programa será reiniciado para aplicar a atualização' })
-    autoUpdater.quitAndInstall()
-  })
+  // autoUpdater.on('update-downloaded', () => {
+  //   tray.displayBalloon({ title: 'Atualização Baixada', content: 'O Programa será reiniciado para aplicar a atualização' })
+  //   autoUpdater.quitAndInstall()
+  // })
 
   ws.onEvent(`watcher.${hostname()}`, (event) => {
     let data = event.request.arguments.data;
