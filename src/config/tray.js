@@ -10,7 +10,7 @@ export default function initTray(win) {
             }
         },
         {
-            label: 'Fechar Orquestrador 19', click: function () {
+            label: 'Fechar Orquestrador', click: function () {
                 app.quit()
             }
         },
