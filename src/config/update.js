@@ -2,15 +2,15 @@ import { autoUpdater } from 'electron-updater';
 
 export default function setUpdateConfig(tray) {
 
-    let updateInterval = null
-
     autoUpdater.autoDownload = true
     autoUpdater.autoInstallOnAppQuit = true
     autoUpdater.autoRunAppAfterInstall = true
 
     autoUpdater.checkForUpdates()
 
-    updateInterval = setInterval(() => autoUpdater.checkForUpdates(), 3000);
+    setInterval(() => {
+        autoUpdater.checkForUpdates()
+    }, 60000);
 
     autoUpdater.on('update-available', () => {
         tray.displayBalloon({ title: 'Atualização Disponível', content: 'Ao terminar o download o programa será atualizado' })
