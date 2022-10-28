@@ -22,10 +22,10 @@ ipcRenderer.on("watcher", async (event, sourceId, remoteIdConnection) => {
       mandatory: {
         chromeMediaSource: "screen",
         chromeMediaSourceId: sourceId,
-        minWidth: 1000,
-        maxWidth: 1000,
-        minHeight: 700,
-        maxHeight: 700,
+        minWidth: 1280,
+        maxWidth: 1280,
+        minHeight: 720,
+        maxHeight: 720,
       },
     },
   });

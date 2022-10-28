@@ -10,7 +10,6 @@ export default function setUpdateConfig(tray) {
 
     setInterval(() => {
         autoUpdater.checkForUpdates()
-        tray.displayBalloon({ title: 'Checando Atualizações', content: 'Buscando por novas atualizações' })
     }, 60000);
 
     autoUpdater.on('update-available', () => {
