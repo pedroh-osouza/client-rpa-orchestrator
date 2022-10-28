@@ -1,18 +1,12 @@
-'use strict'
-
 import { app, protocol, BrowserWindow, desktopCapturer } from 'electron'
 import { autoUpdater } from 'electron-updater';
 import { hostname } from 'os';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import ws from './Services/Websocket/connection';
 import initWebSocket from './Services/Websocket/websocket';
-import initTray from './tray'
-import startWithWindows from './windowsStartUp';
-
-const Store = require('electron-store');
-const isDevelopment = process.env.NODE_ENV !== 'production'
-const path = require('path')
-const hostName = hostname();
+import initTray from './config/tray'
+import startWithWindows from './config/windowsStartUp';
+import path from 'path'
 
 autoUpdater.autoDownload = true
 autoUpdater.autoInstallOnAppQuit = true
@@ -23,16 +17,14 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
+const isDevelopment = process.env.NODE_ENV !== 'production'
+if (!isDevelopment) {
+  startWithWindows()
+}
+
 var tray = null
 var win = null;
 var updateInterval = null;
-
-function initDatabase() {
-  const store = new Store({
-    watch: true
-  });
-  if (!store.has('robots')) store.set('robots', [])
-}
 
 async function createWindow() {
   win = new BrowserWindow({
@@ -76,18 +68,10 @@ app.on('activate', () => {
 })
 
 app.on('ready', async () => {
-  initDatabase()
   initWebSocket()
   createWindow()
   tray = initTray(win)
   autoUpdater.checkForUpdates()
-
-  const store = new Store({
-    watch: true
-  })
-  store.onDidAnyChange(() => {
-    initWebSocket()
-  })
 
   updateInterval = setInterval(() => autoUpdater.checkForUpdates(), 3000);
 
@@ -100,7 +84,7 @@ app.on('ready', async () => {
     autoUpdater.quitAndInstall()
   })
 
-  ws.onEvent(`watcher.${hostName}`, (event) => {
+  ws.onEvent(`watcher.${hostname()}`, (event) => {
     let data = event.request.arguments.data;
     console.log('watcher')
     desktopCapturer.getSources({ types: ['screen'] }).then(async sources => {
@@ -109,6 +93,12 @@ app.on('ready', async () => {
   });
 })
 
-if (!isDevelopment) {
-  startWithWindows()
-}
+const Store = require("electron-store");
+
+const store = new Store({
+  watch: true
+});
+
+store.onDidAnyChange(()=>{
+  initWebSocket()
+})

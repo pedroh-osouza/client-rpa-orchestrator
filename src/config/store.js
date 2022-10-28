@@ -4,6 +4,8 @@ const store = new Store({
   watch: true
 });
 
+if (!store.has('robots')) store.set('robots', [])
+
 export default {
   add(key, item) {
     let data = store.get(key);
@@ -30,5 +32,5 @@ export default {
       value.push(robot[column])
     }
     return value;
-  }
+  },
 };
