@@ -17,10 +17,6 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 var tray = null
 var win = null;
 
-if (!isDevelopment) {
-  startWithWindows()
-}
-
 async function createWindow() {
   win = new BrowserWindow({
     width: 1280,
@@ -67,6 +63,7 @@ app.on('ready', async () => {
   createWindow()
   tray = initTray(win)
   setUpdateConfig(tray)
+  if (!isDevelopment) startWithWindows()
   
   ws.onEvent(`watcher.${hostname()}`, (event) => {
     let data = event.request.arguments.data;
