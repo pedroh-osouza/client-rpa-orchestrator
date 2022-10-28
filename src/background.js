@@ -1,17 +1,17 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, Tray, Menu, desktopCapturer } from 'electron'
+import { app, protocol, BrowserWindow, desktopCapturer } from 'electron'
 import { autoUpdater } from 'electron-updater';
 import { hostname } from 'os';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import ws from './Services/Websocket/connection';
 import initWebSocket from './Services/Websocket/websocket';
 import initTray from './tray'
+import startWithWindows from './windowsStartUp';
 
 const Store = require('electron-store');
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const path = require('path')
-const fs = require('fs')
 const hostName = hostname();
 
 autoUpdater.autoDownload = true
@@ -22,7 +22,6 @@ require('events').EventEmitter.prototype._maxListeners = 1000;
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
-
 
 var tray = null
 var win = null;
@@ -48,8 +47,6 @@ async function createWindow() {
     }
   })
 
-  tray = initTray(win)
-  //win.webContents.openDevTools()
   win.on('close', function () {
     win = null
   })
@@ -82,6 +79,7 @@ app.on('ready', async () => {
   initDatabase()
   initWebSocket()
   createWindow()
+  tray = initTray(win)
   autoUpdater.checkForUpdates()
 
   const store = new Store({
@@ -112,6 +110,5 @@ app.on('ready', async () => {
 })
 
 if (!isDevelopment) {
-  fs.copyFile(`${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Client Rpa Orchestrator.lnk`,
-    `${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Startup/Client Rpa Orchestrator.lnk`, (err) => { console.log(err) })
+  startWithWindows()
 }
