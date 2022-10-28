@@ -6,24 +6,13 @@ import { hostname } from 'os';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import ws from './Services/Websocket/connection';
 import initWebSocket from './Services/Websocket/websocket';
+import initTray from './tray'
 
 const Store = require('electron-store');
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const path = require('path')
 const fs = require('fs')
 const hostName = hostname();
-const contextMenu = Menu.buildFromTemplate([
-  {
-    label: 'Abrir Painel', click: function () {
-      if (!win.isVisible()) win.show()
-    }
-  },
-  {
-    label: 'Fechar Orquestrador', click: function () {
-      app.quit()
-    }
-  },
-])
 
 autoUpdater.autoDownload = true
 autoUpdater.autoInstallOnAppQuit = true
@@ -34,15 +23,10 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
-var tray = null;
+
+var tray = null
 var win = null;
 var updateInterval = null;
-
-function initTray() {
-  tray = new Tray(process.cwd() + '/src/icons/icon.png')
-  tray.setToolTip('Client Rpa Orchestrator')
-  tray.setContextMenu(contextMenu)
-}
 
 function initDatabase() {
   const store = new Store({
@@ -63,7 +47,9 @@ async function createWindow() {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
   })
-  win.webContents.openDevTools()
+
+  tray = initTray(win)
+  //win.webContents.openDevTools()
   win.on('close', function () {
     win = null
   })
@@ -95,7 +81,6 @@ app.on('activate', () => {
 app.on('ready', async () => {
   initDatabase()
   initWebSocket()
-  initTray()
   createWindow()
   autoUpdater.checkForUpdates()
 
