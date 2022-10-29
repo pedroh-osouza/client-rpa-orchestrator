@@ -1,3 +1,5 @@
+import initWebSocket from "@/services/websocket/websocket";
+
 const Store = require("electron-store");
 
 const store = new Store({
@@ -5,6 +7,10 @@ const store = new Store({
 });
 
 if (!store.has('robots')) store.set('robots', [])
+
+store.onDidAnyChange(() => {
+  initWebSocket()
+})
 
 export default {
   add(key, item) {

@@ -1,6 +1,6 @@
 import ws from '../connection';
-import start from '../Triggers/start';
-import stop from '../Triggers/stop';
+import start from '../triggers/start';
+import stop from '../triggers/stop';
 
 export default class Subscribe {
     

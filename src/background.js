@@ -70,13 +70,3 @@ app.on('ready', async () => {
     })
   });
 })
-
-const Store = require("electron-store");
-
-const store = new Store({
-  watch: true
-});
-
-store.onDidAnyChange(() => {
-  initWebSocket()
-})
