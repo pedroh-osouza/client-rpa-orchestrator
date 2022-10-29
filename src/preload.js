@@ -1,10 +1,10 @@
+import ws from "./Services/Websocket/connection";
+
 const { ipcRenderer } = require("electron");
 const peerConnections = {};
 const config = {
   iceServers: [{ url: "stun:stun.l.google.com:19302" }],
 };
-
-import ws from "./Services/Websocket/connection";
 
 function clearPeerConnectionsDisconnecteds(){
   for(let keyConnection in peerConnections ){
@@ -14,8 +14,8 @@ function clearPeerConnectionsDisconnecteds(){
     }
   }
 }
+
 ipcRenderer.on("watcher", async (event, sourceId, remoteIdConnection) => {
-  
   var stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {

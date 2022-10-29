@@ -3,7 +3,6 @@ import start from '../triggers/start';
 import stop from '../triggers/stop';
 
 export default class Subscribe {
-    
     eventStart(public_id) {
         ws.onEvent(`start.${public_id}`, () => {
             start(public_id)
