@@ -1,4 +1,4 @@
-import { app, protocol, BrowserWindow, desktopCapturer } from 'electron'
+import { app, BrowserWindow, desktopCapturer } from 'electron'
 import { hostname } from 'os';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import ws from './Services/Websocket/connection';
@@ -9,11 +9,8 @@ import path from 'path'
 import setUpdateConfig from './config/update';
 
 require('events').EventEmitter.prototype._maxListeners = 1000;
-protocol.registerSchemesAsPrivileged([
-  { scheme: 'app', privileges: { secure: true, standard: true } }
-])
-
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
 var tray = null
 var win = null;
 
@@ -64,7 +61,7 @@ app.on('ready', async () => {
   tray = initTray(win)
   setUpdateConfig(tray)
   if (!isDevelopment) startWithWindows()
-  
+
   ws.onEvent(`watcher.${hostname()}`, (event) => {
     let data = event.request.arguments.data;
     console.log('watcher')
@@ -80,6 +77,6 @@ const store = new Store({
   watch: true
 });
 
-store.onDidAnyChange(()=>{
+store.onDidAnyChange(() => {
   initWebSocket()
 })
