@@ -4,7 +4,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import ws from './services/websocket/connection';
 import initWebSocket from './services/websocket/websocket';
 import initTray from './config/tray'
-import startWithWindows from './config/windowsStartUp';
+import startWithWindows from './config/startup';
 import path from 'path'
 import setUpdateConfig from './config/update';
 
