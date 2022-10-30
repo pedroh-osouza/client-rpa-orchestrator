@@ -1,15 +1,13 @@
-import { app, BrowserWindow, desktopCapturer } from 'electron'
+import { app, BrowserWindow, desktopCapturer } from 'electron';
 import { hostname } from 'os';
 import ws from './services/websocket/connection';
 import initWebSocket from './services/websocket/websocket';
-import initTray from './config/tray'
+import initTray from './config/tray';
 import setStartWithWindows from './config/startup';
 import setUpdateConfig from './config/update';
 import createWindow from './config/window';
 
-require('events').EventEmitter.prototype._maxListeners = 1000;
-
-const isDevelopment = process.env.NODE_ENV !== 'production'
+const isDevelopment = process.env.NODE_ENV !== 'production';
 var tray = null;
 
 app.setAppUserModelId('Client Rpa Orchestrator');
@@ -19,11 +17,11 @@ app.on('window-all-closed', () => {
     tray.destroy()
     app.quit()
   }
-})
+});
 
 app.on('activate', async () => {
   if (BrowserWindow.getAllWindows().length === 0) await createWindow()
-})
+});
 
 app.on('ready', async () => {
   initWebSocket()
