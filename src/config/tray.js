@@ -1,7 +1,7 @@
 import { app, Tray, Menu } from 'electron'
 
 export default function initTray(win) {
-    var tray = null
+    let tray = null;
 
     const contextMenu = Menu.buildFromTemplate([
         {
@@ -14,11 +14,11 @@ export default function initTray(win) {
                 app.quit()
             }
         },
-    ])
+    ]);
 
-    tray = new Tray(process.cwd() + '/src/icons/icon.png')
-    tray.setToolTip('Client Rpa Orchestrator')
-    tray.setContextMenu(contextMenu)
+    tray = new Tray(process.cwd() + '/src/icons/icon.png');
+    tray.setToolTip('Client Rpa Orchestrator');
+    tray.setContextMenu(contextMenu);
 
     return tray;
 }
