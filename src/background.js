@@ -1,8 +1,8 @@
 import { app, BrowserWindow, desktopCapturer } from 'electron'
 import { hostname } from 'os';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-import ws from './Services/Websocket/connection';
-import initWebSocket from './Services/Websocket/websocket';
+import ws from './services/websocket/connection';
+import initWebSocket from './services/websocket/websocket';
 import initTray from './config/tray'
 import startWithWindows from './config/windowsStartUp';
 import path from 'path'
@@ -58,9 +58,11 @@ app.on('activate', () => {
 app.on('ready', async () => {
   initWebSocket()
   createWindow()
+  setUpdateConfig()
   tray = initTray(win)
-  setUpdateConfig(tray)
+
   if (!isDevelopment) startWithWindows()
+  if (process.platform === 'win32') app.setAppUserModelId('Client Rpa Orchestrator');
 
   ws.onEvent(`watcher.${hostname()}`, (event) => {
     let data = event.request.arguments.data;
