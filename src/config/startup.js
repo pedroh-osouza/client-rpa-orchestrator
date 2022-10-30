@@ -1,7 +1,5 @@
-import { app } from 'electron'
-const fs = require('fs')
+import { app, shell } from 'electron'
 
-export default function startWithWindows() {
-    fs.copyFile(`${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Client Rpa Orchestrator.lnk`,
-        `${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Startup/Client Rpa Orchestrator.lnk`, (err) => { console.log(err) })
+export default function setStartWithWindows() {
+    shell.writeShortcutLink(`${app.getPath('appData')}/Microsoft/Windows/Start Menu/Programs/Startup/Client Rpa Orchestrator.lnk`,{target: app.getPath('exe')})
 }

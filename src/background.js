@@ -3,14 +3,16 @@ import { hostname } from 'os';
 import ws from './services/websocket/connection';
 import initWebSocket from './services/websocket/websocket';
 import initTray from './config/tray'
-import startWithWindows from './config/startup';
+import setStartWithWindows from './config/startup';
 import setUpdateConfig from './config/update';
 import createWindow from './config/window';
 
 require('events').EventEmitter.prototype._maxListeners = 1000;
-const isDevelopment = process.env.NODE_ENV !== 'production'
 
+const isDevelopment = process.env.NODE_ENV !== 'production'
 var tray = null;
+
+app.setAppUserModelId('Client Rpa Orchestrator');
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -29,8 +31,7 @@ app.on('ready', async () => {
   let win = await createWindow()
   tray = initTray(win)
 
-  if (!isDevelopment) startWithWindows()
-  if (process.platform === 'win32') app.setAppUserModelId('Client Rpa Orchestrator');
+  if (!isDevelopment) setStartWithWindows()
 
   ws.onEvent(`watcher.${hostname()}`, (event) => {
     let data = event.request.arguments.data;
