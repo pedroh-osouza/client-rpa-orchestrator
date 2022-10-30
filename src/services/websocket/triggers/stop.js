@@ -11,6 +11,5 @@ export default function stop(){
             console.log(`stderr: ${stderr}`);
             return;
         }
-        //console.log(`stdout: ${stdout}`);
     });
 }

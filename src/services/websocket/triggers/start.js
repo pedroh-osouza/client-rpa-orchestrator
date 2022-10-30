@@ -1,3 +1,4 @@
+import logs from "@/config/logs";
 import store from "@/config/store";
 const { exec } = require("child_process");
 
@@ -16,12 +17,14 @@ export default function start(public_id) {
     exec(command, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
+            logs.error(`Erro na execução do robô ${public_id}, ${error.message}`)
             return;
         }
         if (stderr) {
             console.log(`stderr: ${stderr}`);
+            logs.error(`Erro na execução do robô ${public_id}, ${stderr}`)
             return;
         }
-        //console.log(`stdout: ${stdout}`);
+        logs.info(`Robô ${public_id} executado, ${stdout}`)
     });
 }
