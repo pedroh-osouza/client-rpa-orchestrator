@@ -7,6 +7,8 @@ import setStartWithWindows from './config/startup';
 import setUpdateConfig from './config/update';
 import createWindow from './config/window';
 
+require('events').EventEmitter.prototype._maxListeners = 1000;
+
 const isDevelopment = process.env.NODE_ENV !== 'production';
 var tray = null;
 
