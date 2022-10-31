@@ -10,13 +10,11 @@ import createWindow from './config/window';
 require('events').EventEmitter.prototype._maxListeners = 1000;
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
-var tray = null;
 
 app.setAppUserModelId('Client Rpa Orchestrator');
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    tray.destroy()
     app.quit()
   }
 });
@@ -29,8 +27,8 @@ app.on('ready', async () => {
   initWebSocket()
   setUpdateConfig()
   let win = await createWindow()
-  tray = initTray(win)
-
+  initTray(win)
+  
   if (!isDevelopment) setStartWithWindows()
 
   ws.onEvent(`watcher.${hostname()}`, (event) => {

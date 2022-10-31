@@ -1,8 +1,7 @@
 import { app, Tray, Menu } from 'electron'
+var tray = null;
 
 export default function initTray(win) {
-    let tray = null;
-
     const contextMenu = Menu.buildFromTemplate([
         {
             label: 'Abrir Painel', click: function () {
@@ -19,6 +18,4 @@ export default function initTray(win) {
     tray = new Tray(process.cwd() + '/src/icons/icon.png');
     tray.setToolTip('Client Rpa Orchestrator');
     tray.setContextMenu(contextMenu);
-
-    return tray;
 }
