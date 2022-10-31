@@ -3,7 +3,7 @@ import ws from "./Services/Websocket/connection";
 const { ipcRenderer } = require("electron");
 const peerConnections = {};
 const config = {
-  iceServers: [{ url: "stun:stun.l.google.com:19302" }],
+  iceServers: [{ url: process.env.VUE_APP_ROOT_STUN }],
 };
 
 function clearPeerConnectionsDisconnecteds(){
