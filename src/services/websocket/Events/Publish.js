@@ -1,16 +1,11 @@
 const axios = require('axios').default;
-const Store = require('electron-store');
 var execSync = require('child_process').execSync;
 
 export default class Publish {
     async status(id) {
-        let run = true
         let uipathRunning = false
-        const store = new Store({
-            watch: true
-        })
         try {
-            while (run) {
+            while (true) {
                 var processes = execSync('wmic process get description').toString();
                 uipathRunning = processes.includes('UiPath.Executor');
 
@@ -18,14 +13,10 @@ export default class Publish {
                     in_execution: uipathRunning
                 })
 
-                store.onDidAnyChange(() => {
-                    run = false
-                })
-
                 await new Promise(resolve => setTimeout(resolve, 3500));
             }
         } catch (e) {
-            console.log(e)
+            console.log('status error:', e)
         }
     }
 }
