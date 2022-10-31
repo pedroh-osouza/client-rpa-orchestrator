@@ -17,7 +17,7 @@ export default class Publish {
                 await new Promise(resolve => setTimeout(resolve, 3500));
             }
         } catch (e) {
-            console.log('status error:', e)
+            console.log('publish status error:', e)
         }
     }
 }

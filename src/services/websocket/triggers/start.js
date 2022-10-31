@@ -16,12 +16,12 @@ export default function start(public_id) {
     
     exec(command, (error, stdout, stderr) => {
         if (error) {
-            console.log(`error: ${error.message}`);
+            console.log(`start error: ${error.message}`);
             logs.error(`Erro na execução do robô ${public_id}, ${error.message}`)
             return;
         }
         if (stderr) {
-            console.log(`stderr: ${stderr}`);
+            console.log(`start stderr: ${stderr}`);
             logs.error(`Erro na execução do robô ${public_id}, ${stderr}`)
             return;
         }
