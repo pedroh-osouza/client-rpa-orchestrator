@@ -18,6 +18,7 @@ export default async function createWindow() {
   win.on('close', function () {
     win = null
   })
+  win.webContents.openDevTools()
 
   win.on('minimize', function (event) {
     event.preventDefault()
