@@ -68,4 +68,10 @@ ipcRenderer.on("watcher", async (event, sourceId, remoteIdConnection) => {
       new RTCIceCandidate(data.candidate)
     );
   });
+
+  ws.onEvent(`disconnectPeer.${remoteIdConnection}`, () => {
+    peerConnections[remoteIdConnection].close()
+    delete peerConnections[remoteIdConnection];
+  })
+
 });
