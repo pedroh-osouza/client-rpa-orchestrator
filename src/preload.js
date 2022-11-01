@@ -3,12 +3,12 @@ import ws from "./Services/Websocket/connection";
 const { ipcRenderer } = require("electron");
 const peerConnections = {};
 const config = {
-  iceServers: [{ url: process.env.VUE_APP_ROOT_STUN }],
+  iceServers: [{ url: "stun:stun.l.google.com:19302" }],
 };
 
-function clearPeerConnectionsDisconnecteds(){
-  for(let keyConnection in peerConnections ){
-    if(peerConnections[keyConnection].iceConnectionState === 'disconnected'){
+function clearPeerConnectionsDisconnecteds() {
+  for (let keyConnection in peerConnections) {
+    if (peerConnections[keyConnection].iceConnectionState === 'disconnected') {
       peerConnections[keyConnection].close()
       delete peerConnections[keyConnection];
     }
@@ -20,15 +20,15 @@ ipcRenderer.on("watcher", async (event, sourceId, remoteIdConnection) => {
     audio: false,
     video: {
       mandatory: {
-        chromeMediaSource: "screen",
+        chromeMediaSource: 'screen',
         chromeMediaSourceId: sourceId,
         minWidth: 1280,
         maxWidth: 1280,
         minHeight: 720,
-        maxHeight: 720,
-      },
-    },
-  });
+        maxHeight: 720
+      }
+    }
+  })
 
   ws.onEvent(`answer.${remoteIdConnection}`, event => {
     console.log("answer");
@@ -39,7 +39,7 @@ ipcRenderer.on("watcher", async (event, sourceId, remoteIdConnection) => {
   const peerConnection = new RTCPeerConnection(config);
   peerConnections[remoteIdConnection] = peerConnection;
   clearPeerConnectionsDisconnecteds()
-  console.log('peerConnections',peerConnections)
+  console.log('peerConnections', peerConnections)
 
   stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
 

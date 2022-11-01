@@ -1,4 +1,4 @@
-import { app, BrowserWindow, desktopCapturer } from 'electron';
+import { app, BrowserWindow, desktopCapturer, protocol } from 'electron';
 import { hostname } from 'os';
 import ws from './services/websocket/connection';
 import initWebSocket from './services/websocket/websocket';
@@ -8,6 +8,9 @@ import setUpdateConfig from './config/update';
 import createWindow from './config/window';
 
 require('events').EventEmitter.prototype._maxListeners = 1000;
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'app', privileges: { secure: true, standard: true } }
+])
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
