@@ -16,45 +16,44 @@ function clearPeerConnectionsDisconnecteds() {
 }
 
 ipcRenderer.on("watcher", async (event, sourceId, remoteIdConnection) => {
-  var stream = await navigator.mediaDevices.getUserMedia({
-    audio: false,
-    video: {
-      mandatory: {
-        chromeMediaSource: "screen",
-        chromeMediaSourceId: sourceId,
-        minWidth: 1280,
-        maxWidth: 1280,
-        minHeight: 720,
-        maxHeight: 720,
-      },
-    },
-  });
-
-  ws.onEvent(`answer.${remoteIdConnection}`, async (event) => {
-    console.log("answer");
-    let data = event.request.arguments.data;
-    peerConnections[data.remoteIdConnection].setRemoteDescription(
-      data.description
-    );
-  });
-
-  const peerConnection = new RTCPeerConnection(config);
-  peerConnections[remoteIdConnection] = peerConnection;
-  clearPeerConnectionsDisconnecteds();
-  console.log("peerConnections", peerConnections);
-
-  stream.getTracks().forEach((track) => peerConnection.addTrack(track, stream));
-
-  peerConnection.onicecandidate = (event) => {
-    if (event.candidate) {
-      ws.emit(`candidate.${remoteIdConnection}`, {
-        remoteIdConnection,
-        candidate: event.candidate,
-      });
-    }
-  };
-
   try {
+    var stream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: {
+        mandatory: {
+          chromeMediaSource: "screen",
+          chromeMediaSourceId: sourceId,
+          minWidth: 1280,
+          maxWidth: 1280,
+          minHeight: 720,
+          maxHeight: 720,
+        },
+      },
+    });
+  
+    ws.onEvent(`answer.${remoteIdConnection}`, async (event) => {
+      console.log("answer");
+      let data = event.request.arguments.data;
+      peerConnections[data.remoteIdConnection].setRemoteDescription(
+        data.description
+      );
+    });
+  
+    const peerConnection = new RTCPeerConnection(config);
+    peerConnections[remoteIdConnection] = peerConnection;
+    clearPeerConnectionsDisconnecteds();
+    console.log("peerConnections", peerConnections);
+  
+    stream.getTracks().forEach((track) => peerConnection.addTrack(track, stream));
+  
+    peerConnection.onicecandidate = (event) => {
+      if (event.candidate) {
+        ws.emit(`candidate.${remoteIdConnection}`, {
+          remoteIdConnection,
+          candidate: event.candidate,
+        });
+      }
+    };
     let sdp = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(sdp);
 
