@@ -8,8 +8,8 @@ const config = {
 
 function clearPeerConnectionsDisconnecteds() {
   for (let keyConnection in peerConnections) {
-    if (peerConnections[keyConnection].iceConnectionState === 'disconnected') {
-      peerConnections[keyConnection].close()
+    if (peerConnections[keyConnection].iceConnectionState === "disconnected") {
+      peerConnections[keyConnection].close();
       delete peerConnections[keyConnection];
     }
   }
@@ -20,30 +20,32 @@ ipcRenderer.on("watcher", async (event, sourceId, remoteIdConnection) => {
     audio: false,
     video: {
       mandatory: {
-        chromeMediaSource: 'screen',
+        chromeMediaSource: "screen",
         chromeMediaSourceId: sourceId,
         minWidth: 1280,
         maxWidth: 1280,
         minHeight: 720,
-        maxHeight: 720
-      }
-    }
-  })
+        maxHeight: 720,
+      },
+    },
+  });
 
-  ws.onEvent(`answer.${remoteIdConnection}`, event => {
+  ws.onEvent(`answer.${remoteIdConnection}`, async (event) => {
     console.log("answer");
     let data = event.request.arguments.data;
-    peerConnections[data.remoteIdConnection].setRemoteDescription(data.description);
+    peerConnections[data.remoteIdConnection].setRemoteDescription(
+      data.description
+    );
   });
 
   const peerConnection = new RTCPeerConnection(config);
   peerConnections[remoteIdConnection] = peerConnection;
-  clearPeerConnectionsDisconnecteds()
-  console.log('peerConnections', peerConnections)
+  clearPeerConnectionsDisconnecteds();
+  console.log("peerConnections", peerConnections);
 
-  stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+  stream.getTracks().forEach((track) => peerConnection.addTrack(track, stream));
 
-  peerConnection.onicecandidate = event => {
+  peerConnection.onicecandidate = (event) => {
     if (event.candidate) {
       ws.emit(`candidate.${remoteIdConnection}`, {
         remoteIdConnection,
@@ -52,26 +54,28 @@ ipcRenderer.on("watcher", async (event, sourceId, remoteIdConnection) => {
     }
   };
 
-  peerConnection
-    .createOffer()
-    .then(sdp => peerConnection.setLocalDescription(sdp))
-    .then(() => {
-      ws.emit(`offer.${remoteIdConnection}`, {
-        remoteIdConnection,
-        description: peerConnection.localDescription,
-      });
+  try {
+    let sdp = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(sdp);
+
+    ws.emit(`offer.${remoteIdConnection}`, {
+      remoteIdConnection,
+      description: peerConnection.localDescription,
     });
 
-  ws.onEvent(`candidate.${remoteIdConnection}`, event => {
-    let data = event.request.arguments.data;
-    peerConnections[data.remoteIdConnection].addIceCandidate(
-      new RTCIceCandidate(data.candidate)
-    );
-  });
+    ws.onEvent(`candidate.${remoteIdConnection}`, (event) => {
+      let data = event.request.arguments.data;
+      peerConnections[data.remoteIdConnection].addIceCandidate(
+        new RTCIceCandidate(data.candidate)
+      );
+    });
 
-  ws.onEvent(`disconnectPeer.${remoteIdConnection}`, () => {
-    peerConnections[remoteIdConnection].close()
-    delete peerConnections[remoteIdConnection];
-  })
-
+    ws.onEvent(`disconnectPeer.${remoteIdConnection}`, () => {
+      peerConnections[remoteIdConnection].close();
+      delete peerConnections[remoteIdConnection];
+    });
+    
+  } catch (error) {
+    console.log("erro emitir offer");
+  }
 });
