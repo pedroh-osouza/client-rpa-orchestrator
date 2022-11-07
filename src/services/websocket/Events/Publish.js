@@ -1,3 +1,5 @@
+import logs from "@/config/logs";
+
 /* eslint-disable */
 const axios = require("axios").default;
 const { app } = require("electron");
@@ -18,7 +20,7 @@ export default class Publish {
 
         await new Promise((resolve) => setTimeout(resolve, 3500));
       } catch (e) {
-        console.log('status error', e)
+        logs.error('status error ' + e)
         app.relaunch()
         app.quit()
       }
