@@ -1,5 +1,6 @@
 /* eslint-disable */
 const axios = require("axios").default;
+const { app } = require("electron");
 var execSync = require("child_process").execSync;
 
 export default class Publish {
@@ -17,7 +18,8 @@ export default class Publish {
 
         await new Promise((resolve) => setTimeout(resolve, 3500));
       } catch (e) {
-        console.log("publish status error:", e);
+        app.relaunch()
+        app.quit()
       }
     }
   }
