@@ -27,9 +27,10 @@ app.on('activate', async () => {
 });
 
 app.on('ready', async () => {
+  let win = await createWindow()
+  
   initWebSocket()
   setUpdateConfig()
-  let win = await createWindow()
   initTray(win)
   
   if (!isDevelopment) setStartWithWindows()

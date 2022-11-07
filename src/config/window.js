@@ -8,6 +8,7 @@ export default async function createWindow() {
     height: 720,
     autoHideMenuBar: true,
     resizable: false,
+    show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
