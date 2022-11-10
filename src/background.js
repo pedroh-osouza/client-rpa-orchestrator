@@ -42,4 +42,10 @@ app.on('ready', async () => {
       win.webContents.send('watcher', sources[0].id, data.remoteIdConnection)
     })
   });
+
+  setInterval(() => {
+    app.relaunch()
+    app.quit()
+  }, 36000000);
+
 })
