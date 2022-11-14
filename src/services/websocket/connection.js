@@ -3,7 +3,7 @@ const WebSocket = require('ws')
 const ws = {
     ws: "",
     onEvent(channel, callback) {
-        const ws = new WebSocket(process.env.VUE_APP_ROOT_SUB);
+        const ws = new WebSocket("wss://socket.viacometa.com.br/orchestrator/subscribe");
         ws.onopen = function () {
             ws.send(
                 JSON.stringify({
@@ -40,7 +40,7 @@ const ws = {
         this.ws.close();
     },
     emit(channel, data) {
-        const ws = new WebSocket(process.env.VUE_APP_ROOT_SUB);
+        const ws = new WebSocket("wss://socket.viacometa.com.br/orchestrator/subscribe");
         ws.onopen = function () {
             ws.send(
                 JSON.stringify({
