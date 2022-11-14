@@ -13,6 +13,12 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
+const electron = require('electron')
+const dialog = electron.dialog
+
+dialog.showErrorBox = function(title, content) {
+  console.log(`${title}\n${content}`);
+};
 
 app.setAppUserModelId('Client Rpa Orchestrator');
 
