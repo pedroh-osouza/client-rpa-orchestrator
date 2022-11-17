@@ -52,6 +52,6 @@ app.on('ready', async () => {
   setInterval(() => {
     app.relaunch()
     app.quit()
-  }, 10800000);
+  }, 7200000 );
 
 })
