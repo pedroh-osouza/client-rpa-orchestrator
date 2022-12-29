@@ -7,7 +7,6 @@ import setStartWithWindows from './config/startup';
 import setUpdateConfig from './config/update';
 import createWindow from './config/window';
 
-require('events').EventEmitter.prototype._maxListeners = 1000;
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
@@ -51,7 +50,7 @@ app.on('ready', async () => {
 
   setInterval(() => {
     app.relaunch()
-    app.quit()
+    app.exit(0)
   }, 3600000);
 
 })

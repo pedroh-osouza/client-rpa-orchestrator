@@ -19,27 +19,10 @@ export default class Publish {
         });
 
       } catch (e) {
-        app.relaunch()
         logs.error('status error ' + e)
-        app.quit()
+        app.relaunch()
+        app.exit()
       }   
     }, 3500);
-
-    // while (true) {
-    //   try {
-    //     var processes = execSync("wmic process get description").toString();
-    //     uipathRunning = processes.includes("UiPath.Executor");
-
-    //     await axios.post(`https://socket.viacometa.com.br/orchestrator/status/${id}`, {
-    //       in_execution: uipathRunning,
-    //     });
-
-    //     await new Promise((resolve) => setTimeout(resolve, 3500));
-    //   } catch (e) {
-    //     logs.error('status error ' + e)
-    //     app.relaunch()
-    //     app.quit()
-    //   }
-    // }
   }
 }

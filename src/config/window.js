@@ -16,8 +16,9 @@ export default async function createWindow() {
     }
   })
 
-  win.on('close', function () {
-    win = null
+  win.on('close', function (event) {
+    event.preventDefault()
+    win.hide()
   })
 
   win.on('minimize', function (event) {
