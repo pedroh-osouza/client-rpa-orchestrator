@@ -6,6 +6,7 @@ import initTray from './config/tray';
 import setStartWithWindows from './config/startup';
 import setUpdateConfig from './config/update';
 import createWindow from './config/window';
+import store from './config/store'
 
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
@@ -33,6 +34,7 @@ app.on('activate', async () => {
 });
 
 app.on('ready', async () => {
+  store.update()
   win = await createWindow()
   
   initWebSocket()
