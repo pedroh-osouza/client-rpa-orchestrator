@@ -14,6 +14,7 @@ protocol.registerSchemesAsPrivileged([
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const electron = require('electron')
 const dialog = electron.dialog
+var win = null
 
 dialog.showErrorBox = function(title, content) {
   console.log(`${title}\n${content}`);
@@ -32,7 +33,7 @@ app.on('activate', async () => {
 });
 
 app.on('ready', async () => {
-  let win = await createWindow()
+  win = await createWindow()
   
   initWebSocket()
   setUpdateConfig()
@@ -52,5 +53,16 @@ app.on('ready', async () => {
     app.relaunch()
     app.exit(0)
   }, 3600000);
-
 })
+
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    if (win) {
+      if (win.isMinimized()) win.restore();
+      win.focus();
+    }
+  });
+}
